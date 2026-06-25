@@ -1,0 +1,42 @@
+litellm_settings:
+  modify_params: true
+
+model_list:
+  # Claude Sonnet 4.6 (Bedrock)
+  - model_name: claude-sonnet-4-6
+    litellm_params:
+      model: bedrock/global.anthropic.claude-sonnet-4-6
+      aws_region_name: ap-northeast-1
+
+  # Claude Opus 4.6 (Bedrock)
+  - model_name: claude-opus-4-6
+    litellm_params:
+      model: bedrock/global.anthropic.claude-opus-4-6-v1
+      aws_region_name: ap-northeast-1
+
+  # Claude Opus 4.7 (Bedrock)
+  - model_name: claude-opus-4-7
+    litellm_params:
+      model: bedrock/global.anthropic.claude-opus-4-7
+      aws_region_name: ap-northeast-1
+      thinking:
+        type: "adaptive"
+      output_config:
+        effort: "xhigh"
+
+  # Claude Opus 4.8 (Bedrock)
+  - model_name: claude-opus-4-8
+    litellm_params:
+      model: bedrock/global.anthropic.claude-opus-4-8
+      aws_region_name: ap-northeast-1
+      thinking:
+        type: "adaptive"
+      output_config:
+        effort: "xhigh"
+
+general_settings:
+  always_include_stream_usage: true
+  master_key: sk-u38294
+  database_url: "postgresql://postgres:passw0rd@hostname:5432/litellm"
+  store_model_in_db: true
+  store_prompts_in_spend_logs: false
