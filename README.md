@@ -55,6 +55,56 @@ export OPENAI_API_KEY=sk-...你的key...
 litellm --config litellm-config.yaml --port 4000
 ```
 
+#### 接入 AWS Bedrock（pip 模式）
+
+Bedrock 支持两种认证方式，按需选一种：
+
+**① AK/SK（IAM 用户凭证，长期有效）**
+
+```bash
+export AWS_ACCESS_KEY_ID=AKIA...
+export AWS_SECRET_ACCESS_KEY=your-secret-key
+export AWS_REGION_NAME=us-east-1   # 按需修改
+
+litellm --config litellm-config.yaml --port 4000
+```
+
+`litellm-config.yaml` 中对应写法：
+
+```yaml
+- model_name: claude-bedrock
+  litellm_params:
+    model: bedrock/anthropic.claude-3-5-sonnet-20241022-v2:0
+    aws_region_name: us-east-1
+    aws_access_key_id: os.environ/AWS_ACCESS_KEY_ID
+    aws_secret_access_key: os.environ/AWS_SECRET_ACCESS_KEY
+```
+
+> ⚠️ 不要在 `litellm_params` 里加 `api_key` 字段，否则 LiteLLM 会误用它做认证导致鉴权失败。
+
+**② Bedrock API Key（Bearer Token，2025年7月起支持，推荐开发环境使用）**
+
+Bedrock API Key 是 AWS 控制台直接生成的短期/长期 bearer token，无需配置 IAM 用户。
+
+```bash
+export AWS_BEARER_TOKEN_BEDROCK=your-bedrock-api-key
+export AWS_REGION_NAME=us-east-1
+
+litellm --config litellm-config.yaml --port 4000
+```
+
+`litellm-config.yaml` 中对应写法：
+
+```yaml
+- model_name: claude-bedrock
+  litellm_params:
+    model: bedrock/anthropic.claude-3-5-sonnet-20241022-v2:0
+    aws_region_name: us-east-1
+    aws_bedrock_api_key: os.environ/AWS_BEARER_TOKEN_BEDROCK
+```
+
+> Bedrock API Key 在 AWS 控制台的 Amazon Bedrock → API keys 页面生成，有效期最长 12 小时（短期）或长期，适合本地开发快速上手，不需要创建 IAM 用户。
+
 代理启动后用以下命令验证：
 
 ```bash
@@ -99,8 +149,7 @@ curl -G "http://localhost:8080/chat" \
 **流式输出（SSE，逐 token 返回）**
 
 ```bash
-curl -N -G "http://localhost:8080/stream" \
-  --data-urlencode "message=用俳句描述Java"
+git remote add origin https://github.com/ensean/spring-ai-litellm-demo.git
 ```
 
 **POST JSON 方式**
